@@ -84,11 +84,25 @@ class CrimeListFragment : Fragment() {
     private inner class CrimeAdapter(var crimes: List<Crime>) :
         RecyclerView.Adapter<CrimeHolder>() {
 
+        override fun getItemViewType(position: Int): Int {
+
+            return when(crimes[position].requiresPolice){
+                true -> R.layout.list_item_police_crime
+                false -> R.layout.list_item_crime
+            }
+        }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrimeHolder {
             val view = layoutInflater.inflate(R.layout.list_item_crime, parent, false)
+            val policeView = layoutInflater.inflate(R.layout.list_item_police_crime, parent, false)
 
-            return CrimeHolder(view)
+            return when(viewType){
+                R.layout.list_item_crime -> CrimeHolder(view)
+                R.layout.list_item_police_crime -> CrimeHolder(policeView)
+                else -> throw IllegalArgumentException("Unsupported layout")
+            }
 
+            //return CrimeHolder(view)
         }
 
         override fun onBindViewHolder(holder: CrimeHolder, position: Int) {
